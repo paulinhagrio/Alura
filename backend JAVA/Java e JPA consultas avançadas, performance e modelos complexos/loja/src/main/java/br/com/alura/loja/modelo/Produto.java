@@ -1,0 +1,65 @@
+package br.com.alura.loja.modelo;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+
+@Entity  //Fazendo o mapeamento objeto relacional ORM => @Entity indica que é uma entidade da Jpa, que existe uma tabela no banco de dados que é o espelho dessa Classe.
+@Table(name = "produtos")
+@NamedQuery(name = "Produto.produtosPorCategorias",
+        query = "SELECT p FROM Produto p WHERE p.categoria.id.nome = :nome")
+@Inheritance(strategy = InheritanceType.JOINED)   //indica que vou usar essa classe como herança
+public class Produto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // indica que o banco de dados irá gerar automaticamente o valor do id
+    private Long id;                                   //É .IDENTITY porque o id não será sequencial
+    private String nome;
+    private String descricao;
+    private BigDecimal preco;
+    private LocalDate dataCadastro = LocalDate.now();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Categoria categoria;
+
+    public Produto() {
+    }
+
+    public Produto(String nome, String descricao, BigDecimal preco, Categoria categoria) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.categoria = categoria;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+}
